@@ -1,0 +1,25 @@
+{
+    "displayName": "Denied Resource Types",
+    "mode": "All",
+    "description": "Policy controls which RP are blocked.",
+    "parameters": {
+      "listOfResourceTypesBlocked": {
+        "type": "Array",
+        "metadata": {
+          "description": "The list of resource types that are BLOCKED.",
+          "displayName": "Resource Providers that are Blocked from deploying",
+          "strongType": "resourceTypes"
+          
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+          "field": "type",
+          "In": "[parameters('listOfResourceTypesBlocked')]"
+      },
+      "then": {
+        "effect": "deny"
+      }
+    }
+  }

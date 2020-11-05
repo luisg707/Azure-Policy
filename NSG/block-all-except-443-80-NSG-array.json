@@ -1,0 +1,173 @@
+{
+  "properties": {
+    "mode": "All",
+    "parameters": {
+      "AllowedPorts": {
+        "type": "Array",
+        "metadata": {
+          "description": "List of allowed ports",
+          "displayName": "List of allowed ports"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "AnyOf": [
+          {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.Network/networkSecurityGroups/securityRules"
+              },
+              {
+                "not": {
+                  "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                  "in": "[parameters('AllowedPorts')]"
+                }
+              },
+              {
+                "not": {
+                  "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                  "in": "[parameters('AllowedPorts')]"
+                }
+              },
+              {
+                "allOf": [
+                  {
+                    "field": "Microsoft.Network/networkSecurityGroups/securityRules/access",
+                    "equals": "Allow"
+                  },
+                  {
+                    "field": "Microsoft.Network/networkSecurityGroups/securityRules/direction",
+                    "equals": "Inbound"
+                  },
+                  {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                        "notEquals": "443"
+                      },
+                      {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                        "notEquals": "80"
+                      },
+                      {
+                        "not": {
+                          "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                          "in": ["443", "80"]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "anyOf": [
+                      {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                        "in": [
+                          "*",
+                          "Internet",
+                          "0.0.0.0/0",
+                          "::/0"
+                        ]
+                      },
+                      {
+                        "not": {
+                          "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
+                          "notIn": [
+                          "*",
+                          "Internet",
+                          "0.0.0.0/0",
+                          "::/0"
+                        ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.Network/networkSecurityGroups"
+              },
+              {
+                "count": {
+                  "field": "Microsoft.Network/networkSecurityGroups/securityRules[*]",
+                  "where": {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].direction",
+                        "equals": "Inbound"
+                      },
+                      {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].access",
+                        "equals": "Allow"
+                      },
+                      {
+                        "anyOf": [
+                          {
+                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                            "in": [
+                              "*",
+                              "Internet",
+                              "0.0.0.0/0",
+                              "::/0"
+                            ]
+                          },
+                          {
+                            "not": {
+                              "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
+                              "notIn": [
+                              "*",
+                              "Internet",
+                              "0.0.0.0/0",
+                              "::/0"
+                            ]
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange",
+                        "notEquals": "443"
+                      },
+                      {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange",
+                        "notEquals": "80"
+                      },
+                      {
+                        "not": {
+                          "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                          "in": ["443", "80"]
+                        }
+                      },
+                      {
+                        "not": {
+                          "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                          "in": "[parameters('AllowedPorts')]"
+                        }
+                      },
+                      {
+                        "not": {
+                          "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                          "in": "[parameters('AllowedPorts')]"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "greater": 0
+              }
+            ]
+          }
+        ]
+      },
+      "then": {
+        "effect": "deny"
+      }
+    }
+  }
+}

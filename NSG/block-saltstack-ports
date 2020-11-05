@@ -1,0 +1,102 @@
+{
+    "properties": {
+      "mode": "All",
+      "parameters": {
+          "CustomPorts": {
+              "type": "Array",
+              "metadata": {
+                  "description": "List of Custom ports to Block",
+                  "displayName": "Custom Ports"
+              }
+          }
+      },
+      "policyRule": {
+        "if": {
+          "AnyOf": [
+            {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.Network/networkSecurityGroups/securityRules"
+              },
+              {
+                "allOf": [
+                  {
+                    "field": "Microsoft.Network/networkSecurityGroups/securityRules/access",
+                    "equals": "Allow"
+                  },
+                  {
+                    "field": "Microsoft.Network/networkSecurityGroups/securityRules/direction",
+                    "equals": "Inbound"
+                  },
+                  {
+                     "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                     "In": "[parameters('CustomPorts')]"
+                  },
+                  {
+                    "anyOf": [
+                      {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                        "in": [
+                          "*",
+                          "Internet"
+                        ]
+                      },
+                      {
+                        "not": {
+                          "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
+                          "notIn": [
+                            "*",
+                            "Internet"
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+          ]
+          },
+          {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.Network/networkSecurityGroups"
+              },
+              {
+                "count": {
+                  "field": "Microsoft.Network/networkSecurityGroups/securityRules[*]",
+                  "where": {
+                    "allOf": [
+                      {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].direction",
+                        "equals": "Inbound"
+                      },
+                      {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].access",
+                        "equals": "Allow"
+                      },
+                      {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].sourceAddressPrefix",
+                        "equals": "*"
+                      },
+                      {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange",
+                        "In": "[parameters('CustomPorts')]"
+                      } 
+                    ]
+                  }
+                },
+                "greater": 0
+              }
+            ]
+          }
+      ]
+        },
+        "then": {
+          "effect": "deny"
+        }
+      }
+    }
+  }
+  

@@ -1,0 +1,56 @@
+{
+    "properties": {
+      "displayName": "Add a tag to Storage Accounts",
+      "mode": "Indexed",
+      "description": "Checks if a resource tag exists. If it does not exist, it will automatically assume Value. This takes two args: TagName & TagValue (",
+      "metadata": {
+        "version": "1.0.0",
+        "category": "Tags"
+      },
+      "parameters": {
+        "tagName": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Tag Name",
+            "description": "Name of the tag, such as 'environment'"
+          }
+        },
+        "tagValue": {
+          "type": "String",
+          "metadata": {
+            "displayName": "Tag Value",
+            "description": "Value of the tag, which we will assume default. For storage, eg NotPublic"
+          }
+        }
+      },
+      "policyRule": {
+        "if": {
+            "allOf": [
+              {
+                "field": "type",
+                "equals": "Microsoft.Storage/storageAccounts"
+              },
+              {
+                "field": "[concat('tags[', parameters('tagName'), ']')]",
+                "exists": false
+              }
+            ]
+          },
+        "then": {
+          "effect": "modify",
+          "details": {
+            "roleDefinitionIds": [
+              "/providers/microsoft.authorization/roleDefinitions/b24988ac-6180-42a0-ab88-20f7382dd24c"
+            ],
+            "operations": [
+              {
+                "operation": "add",
+                "field": "[concat('tags[', parameters('tagName'), ']')]",
+                "value": "[parameters('tagValue')]"
+              }
+            ]
+          }
+        }
+      }
+    }
+  }

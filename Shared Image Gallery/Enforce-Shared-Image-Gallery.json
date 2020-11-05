@@ -1,0 +1,49 @@
+{
+    "type": "Microsoft.Authorization/policyDefinitions",
+    "name": "allowed-SIG-images", 
+    "properties": {
+        "displayName": "Approved VM images",
+        "description": "This policy governs the approved VM images and requires Virtual Machines (NOT VMSS) ",
+        "parameters": {
+            "imageIds": {
+                "type": "string",
+                "metadata": {
+                    "description": "The list of approved VM images. Example values: /subscriptions/<subscriptionID>/resourceGroups/<resourcegroup>/providers/Microsoft.Compute/galleries/<gallery-name>/* /subscriptions/837d6c17-ee06-4e62-9092-89a880e873aa/resourceGroups/DontDelete/providers/Microsoft.Compute/galleries/sig/* '",
+                    "displayName": "Approved VM images"
+                }
+            },
+            "listOfAllowedimagePublishers": {
+                "type": "Array",
+                "metadata": {
+                   "description": "The list of publishers to audit against. Example: 'MicrosoftWindowsServer'",
+                   "displayName": "Allowed image publishers"
+                }
+             }
+        },
+        "policyRule": {
+            "if": {
+                "allOf": [
+                    {
+                        "field": "type",
+                        "equals": "Microsoft.Compute/virtualMachines"
+                    },
+                    {
+                        "not": {
+                            "field": "Microsoft.Compute/imageId",
+                            "like": "[parameters('imageIds')]"
+                        }
+                    },
+                    {
+                        "not": {
+                            "field": "Microsoft.Compute/imagePublisher",
+                            "in": "[parameters('listOfAllowedimagePublishers')]"
+                        }
+                    }
+                ]
+            },
+            "then": {
+                "effect": "deny"
+            }
+        }
+    }   
+}

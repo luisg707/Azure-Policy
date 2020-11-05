@@ -1,0 +1,62 @@
+{
+  "properties": {
+    "displayName": "blocks storage account from public accessibility unless custom tag is included.",
+    "discription": "Requries storage accounts to select a network ACL, using the action http://Microsoft.Storage/storageAccounts/networkAcls.defaultAction. If a tag is set (we dont check Value), then you can allow public access without acl ",
+    "mode": "indexed",
+    "parameters": {
+      "tagName1": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Tag Name1",
+          "description": "Name of the First tag Field eg Adobe.DataClassification"
+        }
+      },
+      "tagName2": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Tag Name2",
+          "description": "Name of the seccond tag field eg Adobe.DataClassification'"
+        }
+      },
+      "tagValue1": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Tag Value 1",
+          "description": "Value Tag#1 needs to be, eg Public"
+        }
+      },
+      "tagValue2": {
+        "type": "String",
+        "metadata": {
+          "displayName": "Tag Value 2",
+          "description": "Name of Tag#2 needs to be, eg IsPublic"
+        }
+      }
+    },
+    "policyRule": {
+      "if": {
+        "allof": [
+          {
+            "field": "type",
+            "equals": "Microsoft.Storage/storageAccounts"
+          },
+          {
+            "field": "Microsoft.Storage/storageAccounts/networkAcls.defaultAction",
+            "notEquals": "Deny"
+          },
+          {
+            "field": "[concat('tags[', parameters('tagName1'), ']')]",
+            "notEquals": "[parameters('TagValue1')]"
+          },
+          {
+            "field": "[concat('tags[', parameters('tagName2'), ']')]",
+            "notEquals": "[parameters('TagValue2')]"
+          }
+        ]
+      },
+      "then": {
+        "effect": "deny"
+      }
+    }
+  }
+}

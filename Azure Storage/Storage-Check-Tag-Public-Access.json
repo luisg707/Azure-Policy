@@ -1,0 +1,49 @@
+"properties": {
+    "displayName": "Allow Public Access",
+    "mode": "Indexed",
+    "description": "Checks if a tag is set, if it is not, it will alert via audit for remediation. ",
+    "metadata": {
+      "version": "1.0.0",
+      "category": "Tags"
+    },
+
+    "parameters": {
+    "tagName": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Tag Name",
+        "description": "Name of the tag, such as isPublic"
+      }
+    },
+    "tagValue": {
+      "type": "String",
+      "metadata": {
+        "displayName": "Tag Value",
+        "description": "Value of the tag, which we will assume ok for Public. For storage, eg True"
+      }
+    }
+  },
+"PolicyRule": { 
+     "if": {
+      "allOf": [
+        {
+          "field": "type",
+          "equals": "Microsoft.Storage/storageAccounts"
+        },
+        {
+            "field": "[concat('tags[', parameters('tagName'), ']')]",
+            "notEquals": "[parameters('tagValue')]"
+        },
+        {
+          "not": {
+            "field":"Microsoft.Storage/storageAccounts/allowBlobPublicAccess",
+            "equals": "false"
+          }
+        }
+      ]
+    },
+    "then": {
+      "effect": "audit"
+    }
+  }
+}

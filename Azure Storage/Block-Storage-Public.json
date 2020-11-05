@@ -1,0 +1,30 @@
+{
+    "properties": {
+        "displayName": "blocks storage account from public accessibility.",
+        "discription": "Requries storage accounts to select a network no public access. This is done by Networkacls/DefaultAction: Deny",
+        "mode": "all",
+        "policyRule": {
+            "if": {
+                "allof": [
+                    {
+                    "field": "type",
+                    "equals": "Microsoft.Storage/storageAccounts"
+                    },
+                    {
+                        "field": "Microsoft.Storage/storageAccounts/networkAcls.defaultAction",
+                        "notEquals": "false"
+                    }
+
+                ]
+                
+            },
+            "then": {
+                "effect": "deny"
+            }
+
+
+
+        }
+
+    }
+}
