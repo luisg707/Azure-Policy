@@ -8,14 +8,14 @@
         "type": "String",
         "metadata": {
           "displayName": "Tag Name1",
-          "description": "Name of the First tag Field eg Adobe.DataClassification"
+          "description": "Name of the First tag Field eg Microsoft.DataClassification"
         }
       },
       "tagName2": {
         "type": "String",
         "metadata": {
           "displayName": "Tag Name2",
-          "description": "Name of the seccond tag field eg Adobe.DataClassification'"
+          "description": "Name of the seccond tag field eg Microsoft.DataClassification'"
         }
       },
       "tagValue1": {
