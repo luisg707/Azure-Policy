@@ -89,7 +89,7 @@
                       {
                         "anyOf": [
                           {
-                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                            "field": "Microsoft.Network/networkSecurityGroups/securityRules[*]/sourceAddressPrefix",
                             "in": [
                               "*",
                               "Internet",
@@ -99,7 +99,7 @@
                           },
                           {
                             "not": {
-                              "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
+                              "field": "Microsoft.Network/networkSecurityGroups/securityRules[*]/sourceAddressPrefixes[*]",
                               "notIn": [
                                 "*",
                                 "Internet",
@@ -116,7 +116,7 @@
                       },
                       {
                         "not": {
-                          "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                          "field": "Microsoft.Network/networkSecurityGroups/securityRules[*]/destinationPortRanges[*]",
                           "in": "[parameters('CustomPorts')]"
                         }
                       }

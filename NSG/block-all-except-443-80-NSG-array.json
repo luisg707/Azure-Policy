@@ -109,7 +109,7 @@
                       {
                         "anyOf": [
                           {
-                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                            "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].sourceAddressPrefix",
                             "in": [
                               "*",
                               "Internet",
@@ -119,7 +119,7 @@
                           },
                           {
                             "not": {
-                              "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
+                              "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].sourceAddressPrefixes[*]",
                               "notIn": [
                               "*",
                               "Internet",
@@ -140,19 +140,19 @@
                       },
                       {
                         "not": {
-                          "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                          "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRanges[*]",
                           "in": ["443", "80"]
                         }
                       },
                       {
                         "not": {
-                          "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                          "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange",
                           "in": "[parameters('AllowedPorts')]"
                         }
                       },
                       {
                         "not": {
-                          "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                          "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRanges[*]",
                           "in": "[parameters('AllowedPorts')]"
                         }
                       }
