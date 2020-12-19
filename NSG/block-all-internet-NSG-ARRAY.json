@@ -64,7 +64,7 @@
                         "equals": "Inbound"
                       },
                       {
-                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/access",
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].access",
                         "equals": "Allow"
                       },
                       {
