@@ -119,6 +119,12 @@
                           ]
                         },
                         {
+                          "not": {
+                            "value": "[if(and(not(empty(first(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')))), contains(first(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')),'-')), and(greaterOrEquals(int(first(split(first(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')), '-'))),100), lessOrEquals(int(last(split(first(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')), '-'))),200)) , 'false')]",
+                            "equals": "true"
+                          }
+                        },
+                        {
                           "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange",
                           "notIn": "[parameters('CustomPorts')]"
                         },
