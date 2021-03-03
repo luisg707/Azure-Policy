@@ -1,8 +1,5 @@
 {
       "policyType": "Custom",
-      "mode": "All",
-      "parameters": {
-        "CustomPorts": {
           "type": "Array",
           "metadata": {
   "mode": "All",
