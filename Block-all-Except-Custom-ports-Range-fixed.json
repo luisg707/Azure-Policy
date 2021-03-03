@@ -1,0 +1,145 @@
+{
+    "properties": {
+      "displayName": "mightyChallenge",
+      "policyType": "Custom",
+      "mode": "All",
+      "parameters": {
+        "CustomPorts": {
+          "type": "Array",
+          "metadata": {
+            "displayName": "Custom Ports",
+            "description": "List of Custom ports to Allow"
+          }
+        }
+      },
+      "policyRule": {
+        "if": {
+          "AnyOf": [
+            {
+              "allOf": [
+                {
+                  "field": "type",
+                  "equals": "Microsoft.Network/networkSecurityGroups/securityRules"
+                },
+                {
+                  "allOf": [
+                    {
+                      "field": "Microsoft.Network/networkSecurityGroups/securityRules/access",
+                      "equals": "Allow"
+                    },
+                    {
+                      "field": "Microsoft.Network/networkSecurityGroups/securityRules/direction",
+                      "equals": "Inbound"
+                    },
+                    {
+                      "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
+                      "notIn": "[parameters('CustomPorts')]"
+                    },
+                    {
+                      "not": {
+                        "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                        "in": "[parameters('CustomPorts')]"
+                      }
+                    },
+                    {
+                      "not": {
+                        "value": "[if(and(not(empty(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'))), contains(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'),'-')), and(greaterOrEquals(int(first(split(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'), '-'))),10),lessOrEquals(int(last(split(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'), '-'))),20)), 'false')]",
+                        "equals": "true"
+                      }
+                    },
+                    {
+                      "anyOf": [
+                        {
+                          "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                          "in": [
+                            "*",
+                            "Internet",
+                            "0.0.0.0/0",
+                            "::/0"
+                          ]
+                        },
+                        {
+                          "not": {
+                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
+                            "notIn": [
+                              "*",
+                              "Internet",
+                              "0.0.0.0/0",
+                              "::/0"
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "allOf": [
+                {
+                  "field": "type",
+                  "equals": "Microsoft.Network/networkSecurityGroups"
+                },
+                {
+                  "count": {
+                    "field": "Microsoft.Network/networkSecurityGroups/securityRules[*]",
+                    "where": {
+                      "allOf": [
+                        {
+                          "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].direction",
+                          "equals": "Inbound"
+                        },
+                        {
+                          "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].access",
+                          "equals": "Allow"
+                        },
+                        {
+                          "anyOf": [
+                            {
+                              "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
+                              "in": [
+                                "*",
+                                "Internet",
+                                "0.0.0.0/0",
+                                "::/0"
+                              ]
+                            },
+                            {
+                              "not": {
+                                "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
+                                "notIn": [
+                                  "*",
+                                  "Internet",
+                                  "0.0.0.0/0",
+                                  "::/0"
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "field": "Microsoft.Network/networkSecurityGroups/securityRules[*].destinationPortRange",
+                          "notIn": "[parameters('CustomPorts')]"
+                        },
+                        {
+                          "not": {
+                            "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                            "in": "[parameters('CustomPorts')]"
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  "greater": 0
+                }
+              ]
+            }
+          ]
+        },
+        "then": {
+          "effect": "deny"
+        }
+      }
+    }
+  }
