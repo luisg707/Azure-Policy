@@ -1,0 +1,22 @@
+NSG Testing List
+# Set Subscription
+
+az account set -s 722b14cc-3a2c-478f-b576-80b9599e89a3
+
+
+
+
+# Testing Variables
+Brokens:
+
+az network nsg rule create --name thisshouldwork --nsg-name allValues --resource-group nsgAdobe --priority 250 --access Allow --direction Inbound --destination-port-ranges 100
+az network nsg rule create --name thisshouldwork --nsg-name allValues --resource-group nsgAdobe --priority 250 --access Allow --direction Inbound --destination-port-ranges 100-150
+az network nsg rule create --name thisshouldwork --nsg-name allValues --resource-group nsgAdobe --priority 250 --access Allow --direction Inbound --destination-port-ranges 500 502
+
+
+
+Workings:
+
+az network nsg rule create --name thisshouldwork --nsg-name allValues --resource-group nsgAdobe --priority 250 --access Allow --direction Inbound --destination-port-ranges 6001
+az network nsg rule create --name thisshouldwork --nsg-name allValues --resource-group nsgAdobe --priority 250 --access Allow --direction Inbound --destination-port-ranges 6001-6010
+az network nsg rule create --name thisshouldwork --nsg-name allValues --resource-group nsgAdobe --priority 250 --access Allow --direction Inbound --destination-port-ranges 6001 6080
