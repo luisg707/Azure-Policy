@@ -34,7 +34,7 @@
                     "count": {
                       "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
                       "where": {
-                        "value": "[if(and(not(empty(first(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')))), contains(first(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')),'-')), and(lessOrEquals(int(first(split(first(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')), '-'))),5999),true()), 'false')]",
+                        "value": "[if(and(not(empty(first(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')))), not(contains(first(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')),'-'))), and(lessOrEquals(int(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')),5999),true()), 'false')]",
                         "equals": "true"
                       }
                     },
