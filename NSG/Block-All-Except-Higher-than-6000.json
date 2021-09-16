@@ -23,39 +23,10 @@
                   "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange",
                   "equals": "*"
                 },
-
-
-
                 {
                   "value": "[if(and(not(empty(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'))), not(contains(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'),'-'))), and(lessOrEquals(int(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange')),5999),true()), 'false')]",
                   "equals": "true"
                 },
-                {
-                    "count": {
-                      "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
-                      "where": {
-                        "value": "[if(and(not(empty(first(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')))), not(contains(first(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')),'-'))), and(lessOrEquals(int(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')),5999),true()), 'false')]",
-                        "equals": "true"
-                      }
-                    },
-                    "greater": 0
-                },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-                
 
                 {
                   "value": "[if(and(not(empty(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'))), contains(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'),'-')), and(lessOrEquals(int(first(split(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRange'), '-'))),5999),true()), 'false')]",
@@ -73,10 +44,17 @@
                 },
 
 
-
-
-
-
+                {
+                  "count": {
+                    "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
+                    "where": {
+                      "value": "[if(and(not(empty(first(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')))), not(contains(first(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')),'-'))), and(lessOrEquals(int(first(split(first(field('Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]')), '-'))),5999),true()), 'false')]",
+                      "equals": "true"
+                    }
+                  },
+                  "greater": 0
+              },
+                
 
 
 
@@ -86,30 +64,6 @@
                   "not": {
                     "field": "Microsoft.Network/networkSecurityGroups/securityRules/destinationPortRanges[*]",
                     "notEquals": "*"
-                  }
-                }
-              ]
-            },
-            {
-              "anyOf": [
-                {
-                  "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
-                  "equals": "*"
-                },
-                {
-                  "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefix",
-                  "equals": "Internet"
-                },
-                {
-                  "not": {
-                    "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
-                    "notEquals": "*"
-                  }
-                },
-                {
-                  "not": {
-                    "field": "Microsoft.Network/networkSecurityGroups/securityRules/sourceAddressPrefixes[*]",
-                    "notEquals": "Internet"
                   }
                 }
               ]
